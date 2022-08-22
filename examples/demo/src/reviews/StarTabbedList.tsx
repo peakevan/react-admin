@@ -16,9 +16,9 @@ import ReviewListDesktop from './ReviewListDesktop';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import ReviewEdit from './ReviewEdit';
 
-const TabbedReviewList = () => (
+const StarTabbedList = () => (
     <List
-        filterDefaultValues={{ status: 'accepted' }}
+        filterDefaultValues={{ rating: 1 }}
         sort={{ field: 'date', order: 'DESC' }}
         perPage={25}
         filters={reviewFilters}
@@ -28,32 +28,46 @@ const TabbedReviewList = () => (
 );
 
 const tabs = [
-    { id: 'accepted', name: 'Accepted' },
-    { id: 'pending', name: 'Pending' },
-    { id: 'rejected', name: 'Rejected' },
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' },
 ];
 
 const useGetTotals = (filterValues: any) => {
-    const { total: totalOrdered } = useGetList('reviews', {
+    const { total: totalOne } = useGetList('reviews', {
         pagination: { perPage: 1, page: 1 },
         sort: { field: 'date', order: 'DESC' },
-        filter: { ...filterValues, status: 'accepted' },
+        filter: { ...filterValues, rating: 1 },
     });
-    const { total: totalDelivered } = useGetList('reviews', {
+    const { total: totalTwo } = useGetList('reviews', {
         pagination: { perPage: 1, page: 1 },
         sort: { field: 'date', order: 'DESC' },
-        filter: { ...filterValues, status: 'pending' },
+        filter: { ...filterValues, rating: 2 },
     });
-    const { total: totalCancelled } = useGetList('reviews', {
+    const { total: totalThree } = useGetList('reviews', {
         pagination: { perPage: 1, page: 1 },
         sort: { field: 'date', order: 'DESC' },
-        filter: { ...filterValues, status: 'rejected' },
+        filter: { ...filterValues, rating: 3 },
+    });
+    const { total: totalFour } = useGetList('reviews', {
+        pagination: { perPage: 1, page: 1 },
+        sort: { field: 'date', order: 'DESC' },
+        filter: { ...filterValues, rating: 4 },
+    });
+    const { total: totalFive } = useGetList('reviews', {
+        pagination: { perPage: 1, page: 1 },
+        sort: { field: 'date', order: 'DESC' },
+        filter: { ...filterValues, rating: 5 },
     });
 
     return {
-        Accepted: totalOrdered,
-        Pending: totalDelivered,
-        Rejected: totalCancelled,
+        1: totalOne,
+        2: totalTwo,
+        3: totalThree,
+        4: totalFour,
+        5: totalFive,
     };
 };
 
@@ -72,7 +86,7 @@ const TabbedList = () => {
         (event: React.ChangeEvent<{}>, value: any) => {
             setFilters &&
                 setFilters(
-                    { ...filterValues, status: value },
+                    { ...filterValues, rating: value },
                     displayedFilters,
                     false // no debounce, we want the filter to fire immediately
                 );
@@ -100,7 +114,7 @@ const TabbedList = () => {
                         key={choice.id}
                         label={
                             totals[choice.name]
-                                ? `${choice.name} (${totals[choice.name]})`
+                                ? `${choice.name} Star(${totals[choice.name]})`
                                 : choice.name
                         }
                         value={choice.id}
@@ -112,7 +126,7 @@ const TabbedList = () => {
                 <MobileGrid />
             ) : (
                 <>
-                    {filterValues.status === 'accepted' && (
+                    {filterValues.rating === 1 && (
                         <ReviewListDesktop
                             selectedRow={
                                 !!match
@@ -121,7 +135,7 @@ const TabbedList = () => {
                             }
                         />
                     )}
-                    {filterValues.status === 'pending' && (
+                    {filterValues.rating === 2 && (
                         <ReviewListDesktop
                             selectedRow={
                                 !!match
@@ -130,7 +144,25 @@ const TabbedList = () => {
                             }
                         />
                     )}
-                    {filterValues.status === 'rejected' && (
+                    {filterValues.rating === 3 && (
+                        <ReviewListDesktop
+                            selectedRow={
+                                !!match
+                                    ? parseInt((match as any).params.id, 10)
+                                    : undefined
+                            }
+                        />
+                    )}
+                    {filterValues.rating === 4 && (
+                        <ReviewListDesktop
+                            selectedRow={
+                                !!match
+                                    ? parseInt((match as any).params.id, 10)
+                                    : undefined
+                            }
+                        />
+                    )}
+                    {filterValues.rating === 5 && (
                         <ReviewListDesktop
                             selectedRow={
                                 !!match
@@ -160,4 +192,4 @@ const TabbedList = () => {
     );
 };
 
-export default TabbedReviewList;
+export default StarTabbedList;
